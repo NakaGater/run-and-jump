@@ -105,6 +105,7 @@ export default function App() {
   }, []);
 
   const handleGachaComplete = useCallback(() => {
+    setGachaPulls(0);
     setAppScreen('game');
     refresh();
   }, [refresh]);

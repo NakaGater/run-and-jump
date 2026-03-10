@@ -22,16 +22,16 @@ export function drawPokemonPlayer(
   let drawY: number;
 
   if (state === 'charging') {
-    // Crouch: squish vertically
+    // Crouch: squish vertically, bottom-aligned
     drawH = DRAW_SIZE * CHARGE_SCALE_Y;
     drawY = y + height - drawH;
   } else if (state === 'running') {
-    // Bounce up and down while running
+    // Bottom-aligned with bounce
     const bounce = Math.sin(animTimer * BOUNCE_SPEED) * BOUNCE_AMPLITUDE;
-    drawY = y + (height - drawH) / 2 + bounce;
+    drawY = y + height - drawH + bounce;
   } else {
-    // Jumping: normal centered
-    drawY = y + (height - drawH) / 2;
+    // Jumping: bottom-aligned
+    drawY = y + height - drawH;
   }
 
   ctx.drawImage(image, 0, 0, SPRITE_SIZE, SPRITE_SIZE, centerX, drawY, drawW, drawH);
