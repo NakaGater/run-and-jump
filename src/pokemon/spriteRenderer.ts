@@ -1,8 +1,8 @@
 import type { PlayerState } from '../game/types';
 
 const SPRITE_SIZE = 96;
-const DRAW_SIZE = 48;
-const BOUNCE_AMPLITUDE = 3;
+const DRAW_SIZE = 64;
+const BOUNCE_AMPLITUDE = 2;
 const BOUNCE_SPEED = 12;
 const CHARGE_SCALE_Y = 0.7;
 
@@ -22,13 +22,13 @@ export function drawPokemonPlayer(
   let drawY: number;
 
   if (state === 'charging') {
-    // Crouch: squish vertically, bottom-aligned
+    // Crouch: squish vertically, bottom-aligned to ground
     drawH = DRAW_SIZE * CHARGE_SCALE_Y;
     drawY = y + height - drawH;
   } else if (state === 'running') {
-    // Bottom-aligned with bounce
-    const bounce = Math.sin(animTimer * BOUNCE_SPEED) * BOUNCE_AMPLITUDE;
-    drawY = y + height - drawH + bounce;
+    // Bottom-aligned, bounce upward only
+    const bounce = Math.abs(Math.sin(animTimer * BOUNCE_SPEED)) * BOUNCE_AMPLITUDE;
+    drawY = y + height - drawH - bounce;
   } else {
     // Jumping: bottom-aligned
     drawY = y + height - drawH;
