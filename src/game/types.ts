@@ -31,3 +31,7 @@ export interface SpriteFrame {
   data: number[][];
   palette: Record<number, string>;
 }
+
+export type PlayerSpriteConfig =
+  | { mode: 'pixelart' }
+  | { mode: 'pokemon'; image: HTMLImageElement };

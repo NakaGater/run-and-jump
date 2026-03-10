@@ -41,3 +41,8 @@ export const SCORE_PER_SECOND = 10;
 // Animation
 export const RUN_FRAME_DURATION = 0.1; // seconds per frame
 export const RUN_FRAMES = 3;
+
+// Pokemon
+export const GACHA_SCORE_THRESHOLD = 50;
+export const DEFAULT_POKEMON_ID = 25; // Pikachu
+export const GEN1_COUNT = 151;

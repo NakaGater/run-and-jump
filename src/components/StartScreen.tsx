@@ -1,13 +1,20 @@
 import { getHighScore } from '../game/scoreManager';
+import { getSpriteUrl } from '../pokemon/api';
 
 interface Props {
   onStart: () => void;
+  onCharSelect: () => void;
+  onPokedex: () => void;
+  selectedPokemonId: number;
 }
 
-export function StartScreen({ onStart }: Props) {
+export function StartScreen({ onStart, onCharSelect, onPokedex, selectedPokemonId }: Props) {
   const highScore = getHighScore();
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    // Don't start if clicking menu buttons
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-menu-btn]')) return;
     onStart();
   };
 
@@ -48,6 +55,19 @@ export function StartScreen({ onStart }: Props) {
       >
         Run & Jump!
       </h1>
+
+      {/* Selected character preview */}
+      {selectedPokemonId > 0 && (
+        <div style={{ marginBottom: 12 }}>
+          <img
+            src={getSpriteUrl(selectedPokemonId)}
+            crossOrigin="anonymous"
+            alt="Selected"
+            style={{ width: 64, height: 64, imageRendering: 'pixelated' }}
+          />
+        </div>
+      )}
+
       <p
         style={{
           fontFamily: 'sans-serif',
@@ -96,9 +116,48 @@ export function StartScreen({ onStart }: Props) {
           fontWeight: 'bold',
           fontFamily: 'sans-serif',
           boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          marginBottom: 16,
         }}
       >
         TAP TO START
+      </div>
+
+      {/* Menu buttons */}
+      <div style={{ display: 'flex', gap: 12 }} data-menu-btn>
+        <button
+          onClick={(e) => { e.stopPropagation(); onCharSelect(); }}
+          data-menu-btn
+          style={{
+            padding: '10px 24px',
+            borderRadius: 10,
+            border: '2px solid #FFD700',
+            background: 'rgba(0,0,0,0.5)',
+            color: '#FFD700',
+            fontSize: 16,
+            fontWeight: 'bold',
+            fontFamily: 'sans-serif',
+            cursor: 'pointer',
+          }}
+        >
+          キャラ選択
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onPokedex(); }}
+          data-menu-btn
+          style={{
+            padding: '10px 24px',
+            borderRadius: 10,
+            border: '2px solid #FF6B6B',
+            background: 'rgba(0,0,0,0.5)',
+            color: '#FF6B6B',
+            fontSize: 16,
+            fontWeight: 'bold',
+            fontFamily: 'sans-serif',
+            cursor: 'pointer',
+          }}
+        >
+          ずかん
+        </button>
       </div>
     </div>
   );

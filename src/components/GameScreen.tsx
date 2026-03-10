@@ -9,9 +9,10 @@ interface Props {
   onGameOver: (score: number) => void;
   onStateChange: (state: GameState) => void;
   gameState: GameState;
+  pokemonImage?: HTMLImageElement | null;
 }
 
-export function GameScreen({ onScoreChange, onGameOver, onStateChange, gameState }: Props) {
+export function GameScreen({ onScoreChange, onGameOver, onStateChange, gameState, pokemonImage }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<GameEngine | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -53,6 +54,17 @@ export function GameScreen({ onScoreChange, onGameOver, onStateChange, gameState
   }, []);
 
   useEffect(() => {
+    if (engineRef.current) {
+      engineRef.current.spriteConfig = pokemonImage
+        ? { mode: 'pokemon', image: pokemonImage }
+        : { mode: 'pixelart' };
+      if (engineRef.current.state === 'start') {
+        engineRef.current.renderIdle();
+      }
+    }
+  }, [pokemonImage]);
+
+  useEffect(() => {
     if (gameState === 'playing' && engineRef.current && engineRef.current.state !== 'playing') {
       engineRef.current.start();
     }
@@ -82,7 +94,7 @@ export function GameScreen({ onScoreChange, onGameOver, onStateChange, gameState
           display: 'block',
           width: '100%',
           height: '100%',
-          imageRendering: 'pixelated',
+          imageRendering: pokemonImage ? 'auto' : 'pixelated',
         }}
       />
       {gameState === 'playing' && (

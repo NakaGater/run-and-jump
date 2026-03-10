@@ -4,9 +4,11 @@ interface Props {
   score: number;
   isNewHighScore: boolean;
   onRetry: () => void;
+  gachaPulls?: number;
+  onGacha?: () => void;
 }
 
-export function GameOverScreen({ score, isNewHighScore, onRetry }: Props) {
+export function GameOverScreen({ score, isNewHighScore, onRetry, gachaPulls = 0, onGacha }: Props) {
   const highScore = getHighScore();
 
   return (
@@ -75,6 +77,30 @@ export function GameOverScreen({ score, isNewHighScore, onRetry }: Props) {
           NEW HIGH SCORE!
         </p>
       )}
+
+      {/* Gacha button */}
+      {gachaPulls > 0 && onGacha && (
+        <button
+          onClick={onGacha}
+          style={{
+            padding: '14px 40px',
+            borderRadius: 12,
+            border: 'none',
+            background: 'linear-gradient(135deg, #667eea, #764ba2)',
+            color: '#fff',
+            fontSize: 20,
+            fontWeight: 'bold',
+            fontFamily: 'sans-serif',
+            cursor: 'pointer',
+            boxShadow: '0 4px 16px rgba(102,126,234,0.5)',
+            marginBottom: 12,
+            animation: 'pulse 1s ease-in-out infinite alternate',
+          }}
+        >
+          ガチャを引く！ x{gachaPulls}
+        </button>
+      )}
+
       <button
         onClick={onRetry}
         style={{

@@ -1,4 +1,4 @@
-import type { GameState, GameCallbacks } from './types';
+import type { GameState, GameCallbacks, PlayerSpriteConfig } from './types';
 import {
   VIRTUAL_WIDTH, VIRTUAL_HEIGHT,
   BASE_SPEED, MAX_SPEED, SPEED_INCREMENT,
@@ -10,6 +10,7 @@ import { Ground } from './Ground';
 import { Background } from './Background';
 import { getPlayerHitbox, getObstacleHitbox, checkAABB } from './physics';
 import { drawPlayer, drawObstacle } from './sprites';
+import { drawPokemonPlayer } from '../pokemon/spriteRenderer';
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -26,6 +27,7 @@ export class GameEngine {
   score = 0;
   speed = BASE_SPEED;
   elapsedTime = 0;
+  spriteConfig: PlayerSpriteConfig = { mode: 'pixelart' };
 
   constructor(canvas: HTMLCanvasElement, callbacks: GameCallbacks) {
     this.canvas = canvas;
@@ -129,12 +131,7 @@ export class GameEngine {
     // Render a static scene for start screen
     this.background.render(this.ctx);
     this.ground.render(this.ctx);
-    drawPlayer(
-      this.ctx,
-      this.player.x, this.player.y,
-      this.player.width, this.player.height,
-      'running', 0,
-    );
+    this.drawPlayerSprite('running', 0, 0);
   }
 
   private render() {
@@ -151,11 +148,7 @@ export class GameEngine {
     }
 
     // Player
-    drawPlayer(
-      ctx, this.player.x, this.player.y,
-      this.player.width, this.player.height,
-      this.player.state, this.player.animFrame,
-    );
+    this.drawPlayerSprite(this.player.state, this.player.animFrame, this.elapsedTime);
 
     // Charge indicator
     if (this.player.state === 'charging') {
@@ -169,6 +162,24 @@ export class GameEngine {
       ctx.fillRect(bx, by, barW, barH);
       ctx.fillStyle = ratio < 0.5 ? '#FFD700' : ratio < 0.8 ? '#FFA500' : '#FF4444';
       ctx.fillRect(bx + 1, by + 1, (barW - 2) * ratio, barH - 2);
+    }
+  }
+
+  private drawPlayerSprite(state: 'running' | 'charging' | 'jumping', animFrame: number, elapsed: number) {
+    const { ctx, player } = this;
+    if (this.spriteConfig.mode === 'pokemon') {
+      drawPokemonPlayer(
+        ctx, this.spriteConfig.image,
+        player.x, player.y,
+        player.width, player.height,
+        state, elapsed,
+      );
+    } else {
+      drawPlayer(
+        ctx, player.x, player.y,
+        player.width, player.height,
+        state, animFrame,
+      );
     }
   }
 
